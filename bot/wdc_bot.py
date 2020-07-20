@@ -1,6 +1,16 @@
 from pyrogram import Client,Filters
 from text import *
 from random import *
+import os
+
+try:
+    import api
+    BOT_TOKEN=api.TOKEN
+
+except ImportError:
+    BOT_TOKEN=os.environ["API_TOKEN"]
+
+
 
 ##init##
 
