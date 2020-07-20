@@ -1,6 +1,7 @@
 from pyrogram import Client,Filters
 from text import *
 from random import *
+from time import sleep
 
 ##init##
 app = Client(
@@ -14,6 +15,7 @@ def send(msg_get,msg_send):
         text=msg_send,
         reply_to_message_id=msg_get.message_id
         )
+
 
 @app.on_message(Filters.command("hi"))
 def hi(client,message):
@@ -61,6 +63,22 @@ def kick(client,message):
         )
     send(message,f"{message.command[1]} is kiked")
     app.send_message(message.command[1],kic)
+
+@app.on_message(Filters.command('kill'))
+def delete(client,message):
+    message.reply_to_message.delete()
+
+@app.on_message(Filters.command(["whois",'id']))
+def whois(client,message):
+    send(message,app.get_users(message.command[1]))
+
+@app.on_message(Filters.command('members'))
+def memb(client,message):
+    send(message,app.get_chat_members_count(message.chat.id))
+
+@app.on_message(Filters.command('unpin'))
+def mes_count(client,message):
+    app.unpin_chat_message(message.chat.id)
 
 app.run()
 

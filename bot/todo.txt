@@ -1,5 +1,5 @@
 |cmd name|status (no yes chancell)|description
-/help - nos
+/help - no
 /kick -no
 /ban -no
 /hi -yes
@@ -8,8 +8,7 @@
 /admin - no -promote a person to admin
 /pin -no - pin a message
 /unpin -no  -unpin a mesage
-/whois -no get the info abouth a member
-/members -no tells how many members are in the group
-/mesages -no get the mesage count
+/whois -yes get the info abouth a member
+/members -yes tells how many members are in the group
 /rules -yes
 /py (code) -canceled run py code

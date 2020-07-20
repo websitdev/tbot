@@ -16,3 +16,4 @@ If you did everything you could and still have to ask, show your advance. If you
 
 Don't beg too much for help. If some people are willing to help, they will."""
 stupi=['is','is not']
+kic='Oh hey you were kiked if you think is a foult contact @Olivia2016 '
