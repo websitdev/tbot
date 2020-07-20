@@ -1,4 +1,5 @@
 from pyrogram import Client,Filters
+from text import *
 
 ##init##
 app = Client(
@@ -15,7 +16,15 @@ def send(msg_get,msg_send):
 
 @app.on_message(Filters.command("hi"))
 def hi(client,message):
-    send(message,'hello') 
+    send(message,'hello')
+
+@app.on_message(Filters.command("start"))
+def start(client,message):
+    send(message,abouth)
+
+@app.on_message(Filters.command("help"))
+def help(client,message):
+    send(message,help)
 
 app.run()
 
