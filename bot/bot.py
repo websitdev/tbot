@@ -3,9 +3,11 @@ from text import *
 from random import *
 
 ##init##
+
+BOT_TOKEN="1257512221:AAEN1R8ngditDaaseZwumjDmfzTlaI77Rd0"
 app = Client(
     "bot",
-    bot_token="1257512221:AAEN1R8ngditDaaseZwumjDmfzTlaI77Rd0"
+    bot_token=BOT_TOKEN
 )
 ##COMMANDS##
 def send(msg_get,msg_send):
