@@ -5,9 +5,17 @@ app = Client(
     "bot",
     bot_token="1257512221:AAEN1R8ngditDaaseZwumjDmfzTlaI77Rd0"
 )
-#commands
-@app.on_message(Filters.command("start"))
-def on_start(client,message):
-    print("/start command detected")
+##COMMANDS##
+def send(msg_get,msg_send):
+    app.send_message(
+        chat_id=msg_get.chat.id,
+        text=msg_send,
+        reply_to_message_id=msg_get.message_id
+        )
 
-app.run()#starts the app
+@app.on_message(Filters.command("hi"))
+def hi(client,message):
+    send(message,'hello') 
+
+app.run()
+
