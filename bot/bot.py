@@ -1,12 +1,12 @@
-from pyrogram import Client,Filters
+from pyrogram import Client,Filters,ChatPermissions
 from text import *
-from random import *
-from time import sleep
+from random import* 
+import time
 
 ##init##
 app = Client(
     "bot",
-    bot_token="1257512221:AAEN1R8ngditDaaseZwumjDmfzTlaI77Rd0"
+    bot_token="token"
 )
 ##COMMANDS##
 def send(msg_get,msg_send):
@@ -27,7 +27,7 @@ def start(client,message):
 
 @app.on_message(Filters.command("help"))
 def help(client,message):
-    send(message,'help me not working')
+    send(message,help_)
 
 @app.on_message(Filters.command("bye"))
 def bye(client,message):
@@ -39,7 +39,7 @@ def rules(client,message):
 
 @app.on_message(Filters.command(["test","num"]))
 def test(client,message):
-    send(message,smessage.command)
+    send(message,message.command)
 
 @app.on_message(Filters.command('todo'))
 def todo(client,message):
@@ -80,5 +80,17 @@ def memb(client,message):
 def mes_count(client,message):
     app.unpin_chat_message(message.chat.id)
 
-app.run()
+@app.on_message(Filters.command(['pardon','id']))
+def pardon(client,message):
+    app.unban_chat_member(message.chat.id,message.command[1])
+    send(message,f"{message.command[1]} is unbaned")
+    app.send_message(message.command[1],bu)
 
+@app.on_message(Filters.command(['mute24','id']))
+def mute24(client,message):
+    app.restrict_chat_member(message.chat.id, message.command[1], ChatPermissions(), int(time.time() + 86400))
+    send(message,f"{message.command[1]} is muted for 24 hours")
+    app.send_message(message.command[1],bu)
+
+
+app.run()
