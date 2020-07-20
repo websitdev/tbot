@@ -1,2 +1,7 @@
 pyrogram
+<<<<<<< HEAD
 text
+=======
+TgCrypto
+PySocks
+>>>>>>> cf890ade0283900d1e5ab9a382e96ea68b52c40a
