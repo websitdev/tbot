@@ -49,7 +49,18 @@ def todo(client,message):
 @app.on_message(Filters.command(['stupid','id']))
 def stupid(client,message):
     i=choice(stupi)
+    if message.command[1] is '@Arydev' or 'Arydev':
+        i='is not'
     send(message,f"{message.command[1]} {i} stupid")
+
+@app.on_message(Filters.command(['kick','id']))
+def kick(client,message):
+    app.kick_chat_member(
+        chat_id=message.chat.id,
+        user_id=message.command[1]
+        )
+    send(message,f"{message.command[1]} is kiked")
+    app.send_message(message.command[1],kic)
 
 app.run()
 
