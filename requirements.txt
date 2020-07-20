@@ -1,3 +1,4 @@
 pyrogram
+text
 TgCrypto
 PySocks
