@@ -6,14 +6,13 @@ import os
 
 ##init##
 #import my_apis as api
-"""
+
 try:
     import my_apis as api
     API_TOKEN=api.TOKEN
 
 except ImportError:
-"""
-API_TOKEN=os.environ.get('API_TOKEN')
+    API_TOKEN=os.environ.get('API_TOKEN')
 
 app = Client(
     "bot",
