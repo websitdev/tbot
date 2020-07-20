@@ -1,1 +1,1 @@
-from wdc_bot import bot
+from bot import wdc_bot
