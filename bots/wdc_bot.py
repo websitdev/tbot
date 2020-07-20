@@ -1,24 +1,25 @@
 from pyrogram import Client,Filters,ChatPermissions
-from text import *
+#from text import *
 from random import* 
 import time
+import os
 
 ##init##
+#import my_apis as api
+
+
 try:
-    import api
+    import my_apis as api
     API_TOKEN=api.TOKEN
+
 
 except ImportError:
     API_TOKEN=os.environ['API_TOKEN']
-
-print(API_TOKEN)
 
 app = Client(
     "bot",
     bot_token=API_TOKEN
 )
-
-
 ##COMMANDS##
 def send(msg_get,msg_send):
     app.send_message(
@@ -105,4 +106,3 @@ def mute24(client,message):
 
 
 app.run()
-
