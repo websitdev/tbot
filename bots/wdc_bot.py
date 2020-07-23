@@ -19,11 +19,11 @@ app = Client(
     bot_token=API_TOKEN
 )
 ##COMMANDS##
-def send(msg_get,msg_send):
+def send(message,reply):
     app.send_message(
-        chat_id=msg_get.chat.id,
-        text=msg_send,
-        reply_to_message_id=msg_get.message_id
+        chat_id=message.chat.id,
+        text=reply,
+        reply_to_message_id=message.message_id
         )
 
 
