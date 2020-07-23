@@ -1,5 +1,5 @@
 from pyrogram import Client,Filters,ChatPermissions
-#from text import *
+from text import *
 from random import* 
 import time
 import os
