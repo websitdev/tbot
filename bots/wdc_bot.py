@@ -1,4 +1,4 @@
-from pyrogram import Client,Filters,ChatPermissions
+from pyrogram import Client,Filters,ChatPermissions,ChatMember
 from text import *
 from random import* 
 import time
@@ -14,18 +14,53 @@ try:
 except ImportError:
     API_TOKEN=os.environ.get('API_TOKEN')
 
+##=====Variables ===========
+global ADMIN=["owner","administrator")
+
+
 app = Client(
     "bot",
     bot_token=API_TOKEN
 )
 ##COMMANDS##
+
+def isAdmin(message):
+    chatId   = message.chat.id
+    userId   = message.from_user.id
+    user     = app.get_chat_member(chatId,userId)
+    userType = user.status
+
+    if userType == "member":
+        return 0
+
+    else:
+        if UserType == "administrator":
+            return 1
+        return 2
+
+     
+              
 def send(message,reply):
     app.send_message(
         chat_id=message.chat.id,
         text=reply,
         reply_to_message_id=message.message_id
-        )
+    )
 
+def usage(message):
+    try:
+        user   = message.reply_to_message
+        userId = message.reply_to_message.from_user.id
+    except:
+        user   = message
+        try:
+            userId = message.command[1]:
+        except:
+            send(message,f"Invalid usage.\n/{message.command[0]} username or tag message and use /kick")
+            exit(1)
+    return(user,userId)
+
+              
 
 @app.on_message(Filters.command("hi"))
 def hi(client,message):
@@ -66,16 +101,46 @@ def stupid(client,message):
     send(message,f"{message.command[1]} {i} stupid")
 
 @app.on_message(Filters.command(['kick','id']))
-def kick(client,message):
-    app.kick_chat_member(
-        chat_id=message.chat.id,
-        user_id=message.command[1]
+def kick(client,message): 
+    admin = isAdmin(message)   
+    chatId   = message.chat.id
+    userId   = message.from_user.id
+    user     = app.get_chat_member(chatId,userId)
+    userType = user.status
+
+
+    if admin == 0:
+        send(message,"You need to be an admin to execute this command")
+    elif admin == 1  and not user.can_restrict_members:
+        send(message,"Sorry, you dont have enough permission to execute this command")
+    else:
+        user,userId = usage(message)
+        status = app.kick_chat_member(
+            chat_id=user.chat.id,
+            user_id=userId 
+            int(time.time()+60)
         )
-    send(message,f"{message.command[1]} is kiked")
-    app.send_message(message.command[1],kic)
+
+        if type(status) != bool:
+            send(message,f"Kicked {message.command[1]}")
+        else:
+            send(message,"Some error occured")
+
+
 
 @app.on_message(Filters.command('kill'))
 def delete(client,message):
+    admin = isAdmin(message)   
+    
+    chatId   = message.chat.id
+    userId   = message.from_user.id
+    user     = app.get_chat_member(chatId,userId)
+    userType = user.status
+
+    if admin == 0:
+        send(message,"You need to be an admin to execute this command")
+    if admin == 1  and not user.:
+        send(message,"Sorry, you dont have enough permission to execute this command")
     message.reply_to_message.delete()
 
 @app.on_message(Filters.command(["whois",'id']))
@@ -92,6 +157,7 @@ def mes_count(client,message):
 
 @app.on_message(Filters.command(['pardon','id']))
 def pardon(client,message):
+
     app.unban_chat_member(message.chat.id,message.command[1])
     send(message,f"{message.command[1]} is unbaned")
     app.send_message(message.command[1],bu)
