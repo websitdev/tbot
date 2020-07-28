@@ -23,20 +23,21 @@ app = Client(
     bot_token=API_TOKEN
 )
 ##COMMANDS##
+class AdminCheck:
+    def __init__(self,message):
+        self.chatId   = message.chat.id
+        self.userId   = message.from_user.id
+        self.user     = app.get_chat_member(chatId,userId)
+        self.userType = user.status
 
-def isAdmin(message):
-    chatId   = message.chat.id
-    userId   = message.from_user.id
-    user     = app.get_chat_member(chatId,userId)
-    userType = user.status
+    def isAdmin():
+        if userType == "member":
+            return 0
 
-    if userType == "member":
-        return 0
-
-    else:
-        if UserType == "administrator":
-            return 1
-        return 2
+        else:
+            if UserType == "administrator":
+                return 1
+            return 2
 
      
               
@@ -102,22 +103,17 @@ def stupid(client,message):
 
 @app.on_message(Filters.command(['kick','id']))
 def kick(client,message): 
-    admin = isAdmin(message)   
-    chatId   = message.chat.id
-    userId   = message.from_user.id
-    user     = app.get_chat_member(chatId,userId)
-    userType = user.status
+    admin = AdminCheck(message)
 
-
-    if admin == 0:
+    if admin.isAdmin() == 0:
         send(message,"You need to be an admin to execute this command")
-    elif admin == 1  and not user.can_restrict_members:
+    elif admin.isadmin() == 1  and not admin.user.can_restrict_members:
         send(message,"Sorry, you dont have enough permission to execute this command")
     else:
         user,userId = usage(message)
         status = app.kick_chat_member(
             chat_id=user.chat.id,
-            user_id=userId 
+            user_id=userId, 
             int(time.time()+60)
         )
 
@@ -130,18 +126,14 @@ def kick(client,message):
 
 @app.on_message(Filters.command('kill'))
 def delete(client,message):
-    admin = isAdmin(message)   
-    
-    chatId   = message.chat.id
-    userId   = message.from_user.id
-    user     = app.get_chat_member(chatId,userId)
-    userType = user.status
+    admin    = AdminCheck(message)   
 
-    if admin == 0:
+    if admin.isAdmin() == 0:
         send(message,"You need to be an admin to execute this command")
-    if admin == 1  and not user.:
+    elif admin == 1  and not admin.user.can_delete_messages:
         send(message,"Sorry, you dont have enough permission to execute this command")
-    message.reply_to_message.delete()
+    else:
+        message.reply_to_message.delete()
 
 @app.on_message(Filters.command(["whois",'id']))
 def whois(client,message):
