@@ -1,2 +1,4 @@
 my_apis.py
 .vscode/*
+config.ini
+__pycache__
