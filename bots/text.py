@@ -35,3 +35,9 @@ help_=(
     '/pardon <user_id> - unban a user\n'
     '/mute <user_id> - mute a user for 24 hours\n'
     )
+
+mute24_usage = 'reply to a message or use /mute user_id'
+whois_usage = 'reply to a message or use /whois user_id'
+get_id_usage = 'reply to a message'
+kick_usage = 'reply to a message or use /kick user_id'
+delete_usage = 'reply to a message or use /delete number'
