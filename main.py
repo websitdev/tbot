@@ -1,6 +1,8 @@
+"""
+
 import time
 import sys
-import bot
+from bots import bot
 
 def main():
   while 1:
@@ -13,3 +15,4 @@ def main():
         time.sleep(5)
 
 main()
+"""

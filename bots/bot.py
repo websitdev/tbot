@@ -2,7 +2,6 @@
 #install()
 import telebot
 #from remain_up import remain_up
-from text import *
 from random import *
 import time
 import json
@@ -11,48 +10,44 @@ import traceback
 import subprocess
 import secrets
 from threading import Thread
+from Admin import Admin_handler as Adm
+from Variables import *
 
-##init##
-#import my_apis as api
-
-#remain_up()
-
-
-class Break(Exception):
-    pass
-
-
+##======================  init  =====================##
 try:
     import my_apis as api
     API_TOKEN = api.TOKEN
 
 except ImportError:
     API_TOKEN = os.environ.get("BOT_API_TOKEN")
-    #API_TOKEN = ""
+    
 
-##=====Variables ===========
+##====================  Variables  ====================##
 if API_TOKEN is None or API_TOKEN == '':
     print("No token provided")
     exit(1)
 
 msg = 0
-print(API_TOKEN)
+to_delete = 0
 
 app = telebot.TeleBot(API_TOKEN)
 
-##COMMANDS##
+##===================  COMMANDS  ======================##
+def get_user(message):
+    try:
+        user = message.reply_to_message
+        user_id = message.reply_to_message.from_user.id
+    except:
+        user = message
+        try:
+            user_id = message.text.split()[1]
+        except:
+            return (user, None)
+
+    return(user, user_id)
 
 
-def restrict_user(user_id, until_date, *args):
-    app.restrict_chat_member(
-        can_send_messages="mute" in args,
-        can_add_web_page_previews=True,
-        can_invite_users="no_invite" in args,
-        can_send_media_messages="no_media" in args,
-        can_send_other_messages="no_msg" in args,
-        )
-
-
+"""
 def run_python3(message):
     run = message.text.replace('/python3', '')
 
@@ -96,6 +91,7 @@ def run_python3(message):
         return err
 
     os.remove(py_file)
+"""
 
 def is_alive(threads):
     return True in [thread.is_alive() for thread in threads]
@@ -111,56 +107,6 @@ def delete_message(chat_id, msg_id):
         pass
 
 
-def bot_can_delete_messages(chat_id):
-    admins = app.get_chat_administrators(chat_id)
-    bot = app.get_me()
-
-    for admin in admins:
-        if admin.user.id == bot.id:
-            if admin.can_delete_messages:
-                return True
-
-
-def bot_can_restrict_members(chat_id):
-    admins = app.get_chat_administrators(chat_id)
-    bot = app.get_me()
-
-    for admin in admins:
-        if admin.user.id == bot.id:
-            if admin.can_restrict_members:
-                return True
-
-
-def is_bot_admin(chat_id):
-    admins = app.get_chat_administrators(chat_id)
-    bot = app.get_me()
-
-    for admin in admins:
-        if admin.user.id == bot.id:
-            return True
-
-
-def can_delete(message):
-    return message.can_delete_messages()
-
-
-def can_restrict_members(message):
-    return message.can_restrict_members()
-
-
-def is_admin(chat_id, user_id):
-    user = app.get_chat_member(chat_id, user_id)
-    user_type = user.status
-
-    if user_type == "creator":
-        return (True, True)
-
-    elif user_type == "administrator":
-        return (True, False)
-
-    return (False, False)
-
-
 def send(message, reply):
     app.reply_to(
         message,
@@ -168,113 +114,102 @@ def send(message, reply):
     )
 
 
-def get_user(message):
-    try:
-        user = message.reply_to_message
-        user_id = message.reply_to_message.from_user.id
-    except:
-        user = message
-        try:
-            user_id = message.text.split()[1]
-        except:
-            return
-
-    return(user, user_id)
-
+##================  Message Handlers  =======================##
 
 @app.message_handler(commands=['hi', 'hello'])
 def hi(message):
     send(message, 'hello')
 
 
-@app.message_handler(commands=['leave'])
-def hi(message):
+@app.message_handler(commands=['kick_bot'])
+def leave(message):
     app.leave_chat(message.chat.id)
-    send(message, 'screw you guys')
+    send(message, 'Hahaha, NO!')
 
-@app.message_handler(commands=['start'])
-def start(message):
-    send(message, about)
+@app.message_handler(commands=['about'])
+def about(message):
+    send(message, ABOUT)
 
 
 @app.message_handler(commands=['help'])
 def help(message):
-    send(message, help_)
+    send(message, HELP)
 
 
 @app.message_handler(commands=['bye'])
 def bye(message):
-    send(message, "bye i am going to sleep")
-
+    message = get_user(message)
+    send(message[0], "bye i am going to sleep")
 
 @app.message_handler(commands=['rules'])
 def rules(message):
-    send(message, rule)
+    send(message, RULES)
 
 
 @app.message_handler(commands=['start'])
-def test(message):
+def start(message):
     send(message, message.command)
 
 
 @app.message_handler(commands=['todo'])
 def todo(message):
-    send(message, 'hmmm')
+    send(message, TODO)
 
 
 @app.message_handler(commands=['stupid'])
 def stupid(message):
-    send(message, "stupid")
+    message = get_user(message)
+    if message[1] is None:
+        send(message[0], f"You are {STUPID[randint(0,1)]}")
+    else:
+        send(message[0], f"{message.command[1]} is {STUPID[randint(0,1)]}")
 
 @app.message_handler(commands=['die'])
-def stupid(message):
-    send(message, "bot died")
+def died(message):
+    send(message, "You are ded 🔪")
 
 @app.message_handler(commands=['kick'])
 def kick(message):
     try:
-        chat_id = message.chat.id
-        user_id = message.from_user.id
-        admin, can_kick = is_admin(chat_id, user_id)
-        user = app.get_chat_member(chat_id, user_id)
+        kick_usage = "Usage: /kick username \nor \nreply with /kick to the user's message"
+        admin_obj  = Adm(app,message)
+        admin, can_kick = admin_obj.is_admin()
+        chat_id    = admin_obj.chat_id
+        member, member_id = get_user(message)
 
-        if not admin:
+
+        if admin_obj.bot_can_restrict_members():
+            send(message, "I dont have enough priveleges :(")
+            return
+
+        if admin:
             send(message, "You need to be an admin to execute this command")
             return
 
         if admin and not can_kick:
-            if not user.can_restrict_members:
+            if not admin_obj.user.can_restrict_members:
                 send(message, "You don't have sufficient permission")
                 return
+        
 
         if get_user(message) is None:
             send(message, kick_usage)
             return
 
-        member, member_id = get_user(message)
+        if member_id is app.get_me().id:
+            send(message, '🧐')
+            return
 
-        if member_id == app.get_me().id:
-          send(message, '🧐')
-          return
+        if member_id in admin_obj.admin_list:
+            send(message, 'I don\'t kick admins :V')
+            return
 
         if app.get_chat_member(chat_id, member_id).status == "left":
-            send(message, "Not a member")
+            send(message, "Not a member (Feature will be added in future updates)")
             return
 
-        if not is_bot_admin(chat_id):
-            send(message, "Bot is not admin")
-            return
-
-        if not bot_can_restrict_members(chat_id):
-            send(message, "Bot cannot restrict members")
-            return
-
+        
         #user, user_id = get_user(message)
-
-        if is_admin(chat_id, member_id)[0]:
-            send(message, "Cannot kick admin")
-            return
-
         status = app.kick_chat_member(
             chat_id,
             member_id,
@@ -285,39 +220,37 @@ def kick(message):
             send(message, f"Kicked {member_id}")
         else:
             send(message, "Some error occured")
+
     except ImportError:
-        pass
+        send(message, "Internal Error")        
 
 
 @app.message_handler(commands=['delete'])
 def delete(message):
     global msg, to_delete
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-    
-    admin, can_edit = is_admin(chat_id, user_id)
+    admin_obj = Adm(app,message)
+
+    admin, can_edit = admin_obj.is_admin()
     user = app.get_chat_member(message.chat.id,  message.from_user.id)
 
-    if not is_bot_admin:
+    if admin_obj.bot_can_delete_messages():
         send(message, "Bot is not admin")
         return
 
-    if not bot_can_delete_messages(message.chat.id):
-        send(message, "Bot can't delete messsages")
-        return
-
-    if not admin:
+    if admin:
         send(message, "You need to be an admin to execute this command")
         return
-
+    
     if admin and not can_edit:
         if not user.can_delete_messages:
             send(message, "Sorry, you dont have enough permission to execute this command")
             return
 
-    if get_user(message) is None:
-        send(message, delete_usage)
+    if get_user(message)[1] is None:
+        send(message, DELETE_USAGE)
         return
+
+##=======================  Threading Start  ===============================##
 
     user, user_id = get_user(message)
     to_delete = 1
@@ -383,23 +316,25 @@ def delete(message):
             pass
 
         msg += 1
-
+##=======================  Threading End  ==========================##
 
 @app.message_handler(commands=['test'])
 def test(message):
     send(message, "bot is alive")
 
 
-@app.message_handler(commands=['python3'])
-def python3(message):
-    print(message.text)
-    send(message, run_python3(message))
+#@app.message_handler(commands=['python3'])
+#def python3(message):
+#    print(message.text)
+#    send(message, run_python3(message))
 
 
 @app.message_handler(commands=['whois'])
 def whois(message):
-    if get_user(message) is None:
-        send(message, json.loads(whois_usage))
+    user, user_id = get_user(message)
+
+    if user_id is None:
+        send(message, WHOIS_USAGE)
         return
 
     user, user_id = get_user(message)
@@ -410,22 +345,90 @@ def whois(message):
 def memb(message):
     send(message, app.get_chat_members_count(message.chat.id))
 
+##--------------------------------  unpin  ----------------------------------##
 
 @app.message_handler(commands=['unpin'])
 def mes_count(message):
+    admin_obj = Adm(app, message)
+    admin, can_pin = admin_obj.is_admin()
+
+    user = app.get_chat_member(message.chat.id,  message.from_user.id)
+
+
+    if admin_obj.bot_can_pin_messages():
+        send(message, "I don't have enough priveleges :(")
+        return
+
+    if not admin:
+        send(message, "You need to be an admin to execute this command")
+        return
+
+    if admin and not can_pin:
+        if not user.can_pin_messages:
+            send(message, "Sorry, you dont have enough permission to execute this command")
+            return
+    
+
     app.unpin_chat_message(message.chat.id)
 
-
+##---------------------- pardon ----------------------##
 @app.message_handler(commands=['pardon'])
 def pardon(message):
+    admin_obj = Adm(app, message)
+    admin, can_restrict_members = admin_obj.is_admin()
     user, user_id = get_user(message)
-    app.unban_chat_member(message.chat.id, user_id)
+
+
+    user = app.get_chat_member(message.chat.id,  message.from_user.id)
+
+
+    if admin_obj.bot_can_restrict_members:
+        send(message, "Bot is not admin")
+        return
+
+    if not admin:
+        send(message, "You need to be an admin to execute this command")
+        return
+
+    if admin and not can_restrict_members:
+        if not user.can_pin_messages:
+            send(message, "Sorry, you dont have enough permission to execute this command")
+            return
+    
+    if user_id is None:
+        send(message,PARDON_USAGE)
+
+
+    app.unban_chat_member(admin_obj.chat_id, user_id)
     send(message, f"{user_id} is unbaned")
 
-
+##-----------------------  unmute  -------------------------------------##
 @app.message_handler(commands=['unmute'])
 def unmute(message):
-    if get_user(message) is None:
+    unmute_usage = "Use /unmute username"
+
+    admin_obj = Adm(app, message)
+    admin, can_restrict_members = admin_obj.is_admin()
+    user, user_id = get_user(message)
+
+
+    user = app.get_chat_member(message.chat.id,  message.from_user.id)
+
+
+    if not admin_obj.bot_can_restrict_members:
+        send(message, "Bot is not admin")
+        return
+
+    if not admin:
+        send(message, "You need to be an admin to execute this command")
+        return
+
+    if admin and not can_restrict_members:
+        if not user.can_restrict_members:
+            send(message, "Sorry, you dont have enough permission to execute this command")
+            return
+
+    if user_id is None:
         send(message, unmute_usage)
         return
 
@@ -437,26 +440,76 @@ def unmute(message):
 
     send(message, f"{user_id} is unmuted")
     
+##-------------------------  mute24  ------------------------------------##
 @app.message_handler(commands=['mute24'])
 def mute24(message):
-    if get_user(message) is None:
+    mute24_usage = "Use /mute24 username"
+
+
+    admin_obj = Adm(app, message)
+    admin, can_restrict_members = admin_obj.is_admin()
+    user, user_id = get_user(message)
+
+    user = app.get_chat_member(message.chat.id,  message.from_user.id)
+
+
+    if not admin_obj.bot_can_restrict_members:
+        send(message, "Bot is not admin")
+        return
+
+    if not admin:
+        send(message, "You need to be an admin to execute this command")
+        return
+
+    if admin and not can_restrict_members:
+        if not user.can_restrict_members:
+            send(message, "Sorry, you dont have enough permission to execute this command")
+            return
+
+    if user_id is None:
         send(message, mute24_usage)
         return
+
+    if user_id == admin_obj.bot_id:
+        send(message, '🧐')
+        return
+
+    if app.get_chat_member(admin_obj.chat_id, user_id).status == "left":
+        send(message, "Not a member")
+        return
+
+
+    #user, user_id = get_user(message)
+
+    if user_id in admin_obj.admin_list:
+        send(message, "Cannot mute admin")
+        return
+
 
     user, user_id = get_user(message)
     app.restrict_chat_member(
         message.chat.id, user_id, 
         until_date=time.time()+86400,
         can_send_messages=False
-        )
-    
+        )    
     send(message, f"{user_id} is muted for 24 hours")
 
+##-------------------------- GET ID ---------------------------------------##
 @app.message_handler(commands=['get_id'])
 def get_id(message):
-    if get_user(message) is None:
+    get_id_usage = "Usage /id username \nor \nreply to the user's message with /id"
+    user, user_id = get_user(message)
+
+    if user_id is None:
         send(message, get_id_usage)
         return
     
     user, user_id = get_user(message)
     send(message, user_id)
+
+
+
+app.polling()
+
+
+
