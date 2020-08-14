@@ -1,5 +1,4 @@
-pyrogram
-PyTelegramBotAPI==2.2.3
+PyTelegramBotAPI
 telebot
 TgCrypto
 PySocks
