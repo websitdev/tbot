@@ -20,7 +20,6 @@ try:
 
 except ImportError:
     API_TOKEN = os.environ.get("BOT_API_TOKEN")
-    API_TOKEN = "1273279578:AAF3S-tLX-IYkHWF4jnImvugQ5WPV6wlj8Q"
 
 ##====================  Variables  ====================##
 if API_TOKEN is None or API_TOKEN == '':
