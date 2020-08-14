@@ -1,5 +1,5 @@
-PyTelegramBotAPI
 telebot
+PyTelegramBotAPI
 TgCrypto
 PySocks
 gunicorn
