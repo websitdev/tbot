@@ -55,7 +55,7 @@ Oh hy i am WebDevGuard and i guard the @WebDevChat group\n
 
 """
 
-ABOUT = 
+ABOUT = """
 WDC bot 1.2
 
 Made by arydev anonymous_guy and m3hdi652
