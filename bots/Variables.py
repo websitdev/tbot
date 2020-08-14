@@ -32,23 +32,30 @@ RULES = """
 """
 
 HELP   = """
-'Oh hy i am WebDevGuard and i guard the @WebDevChat group\n'
-'/hi      - says hello\n'
-'/help    - this text\n'
-'/bye     - send bot to sleep\n'
-'/rules   - WebDevChat rules\n'
-'/members - member count\n'
-'/unpin   - unpin a message\n'
-'/todo    - what parts are working\n'
-'/stupid <user_id> - says if a user is stupid\n'
-'/kick <user_id>   - bans a user\n'
-'/kill <mgg_id>    - delets a mesage\n'
-'/whois <user_id>  - tells info abouth a user\n'
-'/pardon <user_id> - unban a user\n'
-'/mute <user_id>   - mute a user for 24 hours\n'
+Oh hy i am WebDevGuard and i guard the @WebDevChat group\n
+/hi      - says hello
+/help    - this text
+/bye     - send bot to sleep (not implemented)
+/rules   - WebDevChat rules
+/members - member count
+/unpin   - unpin a message
+/todo    - what parts are working
+/about   - About bot
+/stupid  - Check if you are stupid 😏
+/die     - Kill a member
+/delete  - Deletes message
+/getid   - Get user id
+/kick_bot         - *Tries* to kick bot
+/stupid <user_id> - says if a user is stupid
+/kick <user_id>   - bans a user
+/kill <mgg_id>    - delets a mesage
+/whois <user_id>  - tells info abouth a user
+/pardon <user_id> - unban a user
+/shutup <user_id  - mute a user for 24 hours
+
 """
 
-ABOUT = """
+ABOUT = 
 WDC bot 1.2
 
 Made by arydev anonymous_guy and m3hdi652

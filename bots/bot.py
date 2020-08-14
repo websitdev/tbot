@@ -20,7 +20,7 @@ try:
 
 except ImportError:
     API_TOKEN = os.environ.get("BOT_API_TOKEN")
-    
+    API_TOKEN = "1273279578:AAF3S-tLX-IYkHWF4jnImvugQ5WPV6wlj8Q"
 
 ##====================  Variables  ====================##
 if API_TOKEN is None or API_TOKEN == '':
@@ -148,7 +148,7 @@ def rules(message):
 
 @app.message_handler(commands=['start'])
 def start(message):
-    send(message, message.command)
+    send(message, "Start (does nothing for now)")
 
 
 @app.message_handler(commands=['todo'])
@@ -403,7 +403,7 @@ def pardon(message):
     send(message, f"{user_id} is unbaned")
 
 ##-----------------------  unmute  -------------------------------------##
-@app.message_handler(commands=['unmute'])
+@app.message_handler(commands=['speak'])
 def unmute(message):
     unmute_usage = "Use /unmute username"
 
@@ -441,7 +441,7 @@ def unmute(message):
     send(message, f"{user_id} is unmuted")
     
 ##-------------------------  mute24  ------------------------------------##
-@app.message_handler(commands=['mute24'])
+@app.message_handler(commands=['shutup'])
 def mute24(message):
     mute24_usage = "Use /mute24 username"
 
@@ -511,5 +511,8 @@ def get_id(message):
 
 app.polling()
 
-
-
+"""
+[pyrogram]
+api_id = 1443823
+api_hash = f89fac5dd9f2ddacd257d637a5980f04
+"""
