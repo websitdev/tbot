@@ -122,7 +122,6 @@ def hi(message):
 
 @app.message_handler(commands=['kick_bot'])
 def leave(message):
-    app.leave_chat(message.chat.id)
     send(message, 'Hahaha, NO!')
 
 @app.message_handler(commands=['about'])
