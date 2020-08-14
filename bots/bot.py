@@ -177,11 +177,11 @@ def kick(message):
         member, member_id = get_user(message)
 
 
-        if admin_obj.bot_can_restrict_members():
+        if not admin_obj.bot_can_restrict_members():
             send(message, "I dont have enough priveleges :(")
             return
 
-        if admin:
+        if not admin:
             send(message, "You need to be an admin to execute this command")
             return
 
